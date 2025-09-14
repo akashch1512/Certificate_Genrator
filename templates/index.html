@@ -200,7 +200,7 @@
                         const resp = await fetch(`/upload_status/${encodeURIComponent(IMAGE_NAME)}`);
                         const j = await resp.json();
                         if (j.status === 'done' && j.url) {
-                            const linkedinShareURL = `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=VidyaArambh%20Workshop%20Certificate&organizationName=JNEC&certUrl=${encodeURIComponent(j.url)}&issueYear=2025&issueMonth=9`;
+                            const linkedinShareURL = `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=VidyaArambh%20Workshop%20Certificate&organizationName=ENTC-JNEC&certUrl=${encodeURIComponent(j.url)}&issueYear=2025&issueMonth=9`;
                             linkedinBtn.href = linkedinShareURL;
                             clearInterval(poll);
                         } else if (j.status === 'error') {

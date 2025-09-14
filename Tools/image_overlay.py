@@ -29,7 +29,7 @@ def generate_certificate(template_path, output_path, user, signs_dir=None):
 
     # Compose name (no year as requested)
     full_name = f"{user.get('fname', '')} {user.get('lname', '')}".strip()
-
+    full_name = full_name.title()
     # Basic positioning heuristics: center name horizontally, place year under it
     w, h = canvas.size
 

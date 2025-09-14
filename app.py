@@ -29,16 +29,38 @@ def generate():
         flash('Missing ID', 'error')
         return redirect(url_for('index'))
 
-    csv_path = os.path.join('data', 'user_data', 'user.csv')
+    # Support both formats: 'user.csv' with fname/lname or 'data.csv' with 'name'
+    csv_candidates = [os.path.join('data', 'user_data', 'user.csv'), os.path.join('data', 'user_data', 'data.csv'), os.path.join('data', 'user_data', 'user.csv')]
     user = None
-    try:
+    found = False
+    for csv_path in csv_candidates:
+        if not os.path.isfile(csv_path):
+            continue
+        found = True
         with open(csv_path, newline='', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             for row in reader:
                 if str(row.get('id')) == str(user_id):
+                    # Normalize row to always have 'fname' and 'lname'
+                    if 'name' in row and ('fname' not in row or 'lname' not in row):
+                        name = (row.get('name') or '').strip()
+                        parts = name.split()
+                        if len(parts) == 0:
+                            fname = ''
+                            lname = ''
+                        elif len(parts) == 1:
+                            fname = parts[0]
+                            lname = ''
+                        else:
+                            fname = parts[0]
+                            lname = ' '.join(parts[1:])
+                        row['fname'] = fname
+                        row['lname'] = lname
                     user = row
                     break
-    except FileNotFoundError:
+        if user:
+            break
+    if not found:
         flash('User database not found', 'error')
         return redirect(url_for('index'))
     
