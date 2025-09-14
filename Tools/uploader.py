@@ -1,9 +1,11 @@
 import os
 import requests
 import base64
+from dotenv import load_dotenv
+load_dotenv()
 
 
-def upload_img(image_path, api_key=r"2dab781189c7777d4a16eef7dd65c558"):
+def upload_img(image_path, api_key=os.getenv('IMGBB_API_KEY')):
     """
     Upload an image file to ImgBB. The API key is taken from the `api_key` param
     or the `IMGBB_API_KEY` environment variable.
