@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VidyaArambh Certificate Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at 50% 10%, #1a0f4a, #0d062e 70%);
+            overflow-x: hidden;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            background-image: linear-gradient(180deg, #A4A1C8 0%, #D8D6EF 100%);
+        }
+
+        .essential-requirements-badge {
+            background-color: #1a0f4a;
+            color: #A4A1C8;
+            border: 1px solid #A4A1C8;
+        }
+
+        /* SVG Animations */
+        @keyframes rotate-3d {
+            0% {
+                transform: rotateY(0deg);
+            }
+            100% {
+                transform: rotateY(360deg);
+            }
+        }
+
+        @keyframes move-up-down {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .animated-svg-left {
+            animation: rotate-3d 8s linear infinite, move-up-down 5s ease-in-out infinite;
+        }
+
+        .animated-svg-right {
+            animation: rotate-3d 10s linear infinite reverse, move-up-down 6s ease-in-out infinite reverse;
+        }
+        
+        /* Original spinner animation */
+        .spinner {
+            width: 5rem;
+            height: 5rem;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="gradient-bg">
+
+    
+
+    <main class="relative z-10 w-full max-w-2xl mx-auto text-center">
+        <div class="space-y-6">
+            <div class="inline-flex items-center space-x-2 px-4 py-1 rounded-full essential-requirements-badge text-sm font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.832 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.832-1.573l7-10a1 1 0 011.13-1.38z" clip-rule="evenodd" />
+                </svg>
+                <span>Get Your Certificate</span>
+            </div>
+            
+            <h1 class="text-5xl sm:text-6xl font-extrabold tracking-tight text-gradient">
+                Thanks for Participating!
+            </h1>
+            
+            <p class="text-lg sm:text-xl text-gray-300 mx-auto max-w-xl">
+                Congratulations! Your certificate is ready. Thank you for being part of the event
+            </p>
+        </div>
+        
+        <div class="w-full h-1 bg-gray-600 my-10 relative">
+            <div class="absolute inset-0 flex items-center justify-center">
+                <div class="w-2 h-2 rounded-full bg-blue-400"></div>
+            </div>
+        </div>
+
+        <div class="bg-[#18123A] p-8 rounded-2xl shadow-2xl space-y-8 max-w-xl mx-auto">
+            <header class="text-center space-y-2">
+                <h2 class="text-3xl font-extrabold tracking-tight text-gradient">
+                    Get Your Certificate
+                </h2>
+                <p class="text-lg text-gray-400">
+                    Enter your unique ID below.
+                </p>
+            </header>
+
+            <form id="certificateForm" class="space-y-6" method="post" action="/generate">
+                <div>
+                    <label for="studentId" class="block text-sm font-medium text-gray-300 mb-2 text-left">
+                        Enter your unique ID
+                    </label>
+                    <input type="text" id="studentId" name="id" required class="w-full px-4 py-3 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-300 placeholder-gray-400" placeholder="e.g., AB12345">
+                </div>
+                <button type="submit" class="w-full py-3 bg-[#8150FF] hover:bg-[#A450FF] rounded-lg text-lg font-semibold transition-colors duration-300">
+                    Generate Certificate
+                </button>
+            </form>
+
+            <div id="loadingState" class="hidden text-center space-y-6 py-12">
+                <div class="flex justify-center">
+                    <div class="spinner"></div>
+                </div>
+                <h2 class="text-2xl font-bold">Generating Your Certificate...</h2>
+                <p class="text-gray-400">
+                    This may take a moment.
+                </p>
+            </div>
+
+            <div id="resultState" class="hidden text-center space-y-6 pt-6">
+                <h2 class="text-2xl font-bold text-green-400">Certificate Ready!</h2>
+                <p class="text-gray-300">
+                    Your certificate has been successfully generated.
+                </p>
+                
+                <div class="space-y-4">
+                    <a id="pdfBtn" href="{{ pdf_download or '#' }}" class="block w-full py-3 bg-indigo-500 hover:bg-indigo-600 rounded-lg text-lg font-semibold transition-colors duration-300" download>
+                        Download PDF
+                    </a>
+
+                    <a id="linkedinBtn" href="#" target="_blank" class="block w-full py-3 bg-blue-500 hover:bg-blue-600 rounded-lg text-lg font-semibold transition-colors duration-300">
+                        Add to LinkedIn
+                    </a>
+                </div>
+
+                <div class="mt-8 space-y-3">
+                    <p class="bg-yellow-400 text-gray-900 p-4 rounded-lg font-medium text-sm">
+                        ⚠️ <span class="font-semibold">Important:</span> We do not guarantee saving certificates on our servers. Please download it as soon as possible.
+                    </p>
+                    {% if not result_url and pdf_download %}
+                    <p class="bg-blue-200 text-gray-900 p-3 rounded-lg font-medium text-sm">
+                        ⏳ Your certificate is being generated and the image upload may take a few minutes. Please wait before clicking the ‘Add to LinkedIn’ button to ensure it attaches correctly.
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Client-side UI handling. When server returns `result_url`, this will show the result section.
+        const form = document.getElementById('certificateForm');
+        const loadingState = document.getElementById('loadingState');
+        const resultState = document.getElementById('resultState');
+        const pdfBtn = document.getElementById('pdfBtn');
+        const linkedinBtn = document.getElementById('linkedinBtn');
+
+        // Server-provided URLs
+        const RESULT_URL = "{{ result_url or '' }}";
+        const PDF_URL = "{{ pdf_download or '' }}";
+        const IMAGE_NAME = "{{ image_name or '' }}"; // basename of generated PNG
+
+        // Show result if we have either an uploaded image URL or a PDF download
+        if (RESULT_URL || PDF_URL) {
+            form.classList.add('hidden');
+            loadingState.classList.add('hidden');
+            resultState.classList.remove('hidden');
+
+            // Set PDF download link (prefer server-provided PDF link)
+            pdfBtn.href = PDF_URL || '#';
+
+            // If we already have a RESULT_URL (rare), use it. Otherwise poll upload_status.
+            if (RESULT_URL) {
+                const linkedinShareURL = `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=VidyaArambh%20Workshop&organizationName=ENTC-JNEC&certUrl=${encodeURIComponent(RESULT_URL)}&issueYear=2025&issueMonth=9`;
+                linkedinBtn.href = linkedinShareURL;
+            } else if (IMAGE_NAME) {
+                // Poll every 2 seconds up to ~30s for the uploaded URL
+                let attempts = 0;
+                const maxAttempts = 20;
+                const poll = setInterval(async () => {
+                    attempts += 1;
+                    try {
+                        const resp = await fetch(`/upload_status/${encodeURIComponent(IMAGE_NAME)}`);
+                        const j = await resp.json();
+                        if (j.status === 'done' && j.url) {
+                            const linkedinShareURL = `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=VidyaArambh%20Workshop%20Certificate&organizationName=JNEC&certUrl=${encodeURIComponent(j.url)}&issueYear=2025&issueMonth=9`;
+                            linkedinBtn.href = linkedinShareURL;
+                            clearInterval(poll);
+                        } else if (j.status === 'error') {
+                            // keep LinkedIn disabled but stop polling
+                            linkedinBtn.href = '#';
+                            clearInterval(poll);
+                        } else if (attempts >= maxAttempts) {
+                            clearInterval(poll);
+                        }
+                    } catch (err) {
+                        if (attempts >= maxAttempts) clearInterval(poll);
+                    }
+                }, 2000);
+            }
+        }
+    </script>
+</body>
+</html>
