@@ -18,20 +18,30 @@ def generate_certificate(template_path, output_path, user, signs_dir=None):
     canvas.paste(template, (0, 0))
 
     draw = ImageDraw.Draw(canvas)
-    font_path = "static/fonts/AlexBrush-Regular.ttf"
-    # Choose a default font included with Pillow; fall back to a basic font if not available
-    try:
-        font = ImageFont.truetype(font_path, size=140)
-        small_font = ImageFont.truetype("arial.ttf", size=36)
-    except Exception:
-        font = ImageFont.load_default()
-        small_font = ImageFont.load_default()
 
     # Compose name (no year as requested)
     full_name = f"{user.get('fname', '')} {user.get('lname', '')}".strip()
     full_name = full_name.title()
-    # Basic positioning heuristics: center name horizontally, place year under it
+    # Basic positioning heuristics: center name horizontally
     w, h = canvas.size
+
+    # Choose font sizes relative to image width so text scales across devices
+    def _load_font(preferred, size):
+        for p in preferred:
+            try:
+                return ImageFont.truetype(p, size=size)
+            except Exception:
+                continue
+        try:
+            return ImageFont.truetype("arial.ttf", size=size)
+        except Exception:
+            return ImageFont.load_default()
+
+    base_font_size = max(36, w // 18)  # ~5-6% of width
+    small_font_size = max(18, w // 40)
+    preferred_fonts = ["static/fonts/AlexBrush-Regular.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", "DejaVuSans.ttf", "LiberationSans-Regular.ttf", "FreeSans.ttf"]
+    font = _load_font(preferred_fonts, base_font_size)
+    small_font = _load_font(preferred_fonts, small_font_size)
 
     # Helper to get text size in a Pillow-version-safe way
     def _text_size(draw_obj, text, font_obj):
